@@ -21,7 +21,7 @@ public class Empleado extends Thread {
         while(true) {
             try
             {
-                sleep((int)(400+300*Math.random()));
+                sleep((int)(400+300*Math.random())); //?????
             } catch(InterruptedException e){ }
                 miCinta.recogerMaleta(id);
         }
