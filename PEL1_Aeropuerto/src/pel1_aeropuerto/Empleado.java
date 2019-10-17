@@ -4,6 +4,7 @@ public class Empleado extends Thread {
  
     private Cinta miCinta;
     private String id;
+    private Avion a;
     
     public Empleado(String id, Cinta miCinta)
     {
@@ -11,6 +12,9 @@ public class Empleado extends Thread {
         this.id=id;
     }
     
+    public void setAvion(Avion avion) {
+        this.a=avion;
+    }
     public void setID(String nombre) {
         this.id=nombre;
     }
@@ -23,7 +27,13 @@ public class Empleado extends Thread {
             {
                 sleep((int)(400+300*Math.random()));
             } catch(InterruptedException e){ }
-                miCinta.recogerMaleta(id);
+                miCinta.cogerMaleta(id);
+                llevarMaleta(a);
         }
+    }
+    
+    public void llevarMaleta(Avion a) {
+        a.getMaletas().add(miCinta.getMaleta());
+        System.out.println(a.toString());
     }
 }

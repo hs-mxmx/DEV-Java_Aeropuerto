@@ -31,7 +31,7 @@ public class Cinta {
         
     }
     
-    public void recogerMaleta (String id) {
+    public void cogerMaleta (String id) {
         try {
             cerrojo.lock();
             while(cintaVacia()) {
@@ -43,7 +43,7 @@ public class Cinta {
             System.out.println("\n"+"\033[36m"+id+" \033[30mcoge la maleta "+maleta+" \033[30my la lleva al avión");
             System.out.println("\033[35mMaletas en la cinta -> "+espacio);
             mirarCinta.signalAll();
-            
+       
         } finally {
             cerrojo.unlock();
         }
@@ -55,6 +55,10 @@ public class Cinta {
     
     public boolean cintaLlena() {
         return espacio == 8;
+    }
+    
+    public String getMaleta() {
+        return maleta;
     }
 
 }
