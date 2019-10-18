@@ -26,19 +26,19 @@ public class Paso {
      public void Mirar(String nombre){
         try{
             lock.lock();
-            while(nombre.equals("Empleado 1" )&& c_empleado1){
+            while(nombre.contains("Dani" )&& c_empleado1){
                 //System.out.println("Cerrado Empleados");
                 c_empleado1 = false;
                 try{
                     empleado1.await();
                 }catch(Exception ie){}
-            }while(nombre.equals("Empleado 2") && c_empleado2 ){
+            }while(nombre.contains("Jorge") && c_empleado2 ){
                 //System.out.println("Cerrado Empleados");
                 c_empleado2 = false;
                 try{
                     empleado2.await();
                 }catch(Exception ie){}
-            }while(nombre.equals("Pasajeros") && c_pasajeros){
+            }while(c_pasajeros){
                //System.out.println("Cerrado Pasajeros");
                 pasajeros_bloqueados += 1;
                 try{
