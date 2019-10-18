@@ -14,10 +14,11 @@ public class Pasajero extends Thread {
     private Cinta miCinta;
     private Paso paso;
     Random rand = new Random();
-    JTextArea jTextArea1, jTextArea4;
+    JTextArea jTextArea1, jTextArea4, jTextArea6;
     JLabel jLabel4, jLabel1, jLabel2, jLabel8;
     
-    public Pasajero(String nombre, Cinta cinta,JTextArea jTextArea1, JLabel jLabel4, JLabel jLabel1, JLabel jLabel2, Paso paso, JLabel jLabel8, JTextArea jTextArea4){
+    public Pasajero(String nombre, Cinta cinta,JTextArea jTextArea1, JLabel jLabel4, 
+            JLabel jLabel1, JLabel jLabel2, Paso paso, JLabel jLabel8, JTextArea jTextArea4, JTextArea jTextArea6){
         this.nombre = nombre;
         miCinta = cinta;       
         this.jTextArea1 = jTextArea1;
@@ -27,6 +28,7 @@ public class Pasajero extends Thread {
         this.paso = paso;
         this.jLabel8 = jLabel8;
         this.jTextArea4 = jTextArea4;
+        this.jTextArea6 = jTextArea6;
 
         
     }
@@ -40,7 +42,7 @@ public class Pasajero extends Thread {
             int id_maleta=i+1;
             maleta = nombre+"-"+id_maleta;
             paso.Mirar("Pasajeros");
-            miCinta.dejaMaleta(maleta, nombre, jTextArea1, jLabel4, jLabel1, jLabel2, jLabel8);
+            miCinta.dejaMaleta(nombre, maleta, jTextArea1, jLabel4, jLabel1, jLabel2, jLabel8, jTextArea6);
             if(i==1){
                 miCinta.abandona(nombre, jTextArea4);
             }
@@ -48,3 +50,7 @@ public class Pasajero extends Thread {
     }
       
 }
+
+
+
+// maleta1 , maleta2, maleta3

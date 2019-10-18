@@ -14,13 +14,18 @@ import java.awt.font.TextAttribute;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.AttributedString;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 import javax.swing.*; 
 
 
 public class Cinta {
     
+    private ArrayList <String> cinta;
     private String maleta;
+    Random rand = new Random();
+    private int posicion_random;
     private boolean hay_maleta = false;
     private Lock lock = new ReentrantLock();
     private Condition mirarCinta = lock.newCondition();
@@ -29,15 +34,20 @@ public class Cinta {
     ImageIcon go = new ImageIcon(this.getClass().getResource("/images/go2.png"));
     ImageIcon stop = new ImageIcon(this.getClass().getResource("/images/Stop_hand.png"));
     
-    public void dejaMaleta(String id_maleta, String nombre, JTextArea jTextArea1, JLabel jLabel4,  JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8){
+    public Cinta(){
+        cinta = new ArrayList<>();
+    }
+    
+    public void dejaMaleta(String nombre, String id_maleta, JTextArea jTextArea1, JLabel jLabel4,  
+            JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6){
         try{
             lock.lock();
-            if(total_maletas == 8){
+            if(cinta.size() == 8){
                 jLabel8.setIcon(stop);
             }else{
                 jLabel8.setIcon(go);
             }
-            while(total_maletas == 8){
+            while(cinta.size() >= 8){
                 try{
                     mirarCinta.await();
                 }catch(Exception ie){}
@@ -45,10 +55,11 @@ public class Cinta {
                 total_maletas = total_maletas + 1;
                 contador_dejadas = contador_dejadas + 1;
                 //total_maletas -= 1;
-                hay_maleta = true;
                 maleta = id_maleta;
+                cinta.add(maleta);
                 jLabel4.setText(String.valueOf(total_maletas));
-                jTextArea1.setText(jTextArea1.getText()+ Pasajero(id_maleta, nombre) + "\n" );  
+                jTextArea1.setText(jTextArea1.getText()+ Pasajero(maleta, nombre) + "\n" );  
+                jTextArea6.setText(maletasCinta());
                 jLabel1.setText(String.valueOf(contador_dejadas));
                 guardarDatos(nombre,maleta);
                 guardarDatosPasajeros(nombre);
@@ -60,25 +71,32 @@ public class Cinta {
         }
     }
     
-    public String cogeMaleta(String nombre, JTextArea jTextArea2, JLabel jLabel4, JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8){
+    public String cogeMaleta(String nombre, JTextArea jTextArea2, JLabel jLabel4, 
+            JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6){
+            int long_cinta = cinta.size()-1;
         try{
             lock.lock();
-            if(total_maletas == 8){
+            if(cinta.size() == 8){
                 jLabel8.setIcon(stop);
             }else{
                 jLabel8.setIcon(go);
             }
-            while(!hay_maleta && contador_cogidas == contador_dejadas){
+            while(cinta.isEmpty() && contador_cogidas == contador_dejadas){
                 try{
                     mirarCinta.await();
                 }catch(Exception ie){}
             }
-            hay_maleta = false;
+            posicion_random = rand.nextInt((long_cinta-0)+1)+0;
+            System.out.println("Size: " + cinta.size());
+            System.out.println("Random: " + posicion_random);
+            maleta = cinta.get(long_cinta-posicion_random);
+            cinta.remove(long_cinta-posicion_random);
             total_maletas = total_maletas - 1;
             contador_cogidas = contador_cogidas + 1;
             jLabel4.setText(String.valueOf(total_maletas));
             mirarCinta.signalAll();
             jTextArea2.setText(jTextArea2.getText() + Empleado(nombre) + "\n");
+            jTextArea6.setText(maletasCinta());
             jLabel2.setText(String.valueOf(contador_cogidas));
             guardarDatos(nombre,maleta); 
             guardarDatosEmpleados(nombre,maleta);
@@ -108,6 +126,19 @@ public class Cinta {
         return mensaje;
     }
     
+    public String maletasCinta(){
+        int i = 0;
+        String contenido = "";
+        if(cinta.isEmpty()){
+            return "La cinta esta vacia";
+        }
+        while(i <cinta.size()){
+            contenido = contenido + cinta.get(i) + "\n";
+            i++;
+        }
+        return contenido;
+    }
+        
     
     public void guardarDatos(String nombre, String id_maleta){
         FileWriter historial = null;

@@ -38,13 +38,13 @@ public class Paso {
                 try{
                     empleado2.await();
                 }catch(Exception ie){}
-            }while(c_pasajeros){
+            /*}while(c_pasajeros && !nombre.contains("Dani") && !nombre.contains("Jorge")){
                //System.out.println("Cerrado Pasajeros");
                 pasajeros_bloqueados += 1;
                 try{
                     pasajeros.await();
                 }catch(Exception ie){}
-            }while(c_global){
+            }*/}while(c_global){
                 total_bloqueados += 1;
                 //System.out.println("Bloqueados");
                 try{

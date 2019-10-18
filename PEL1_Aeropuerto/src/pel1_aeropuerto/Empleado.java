@@ -15,14 +15,14 @@ public class Empleado extends Thread{
     private Cinta miCinta;
     private Paso paso;
     private Avion miAvion;
-    private int contador, maletas_avion;
-    JTextArea jTextArea2, jTextArea3;
+    private int contador;
+    JTextArea jTextArea2, jTextArea3, jTextArea6;
     JLabel jLabel4, jLabel1, jLabel2, jLabel5, jLabel8;
     
     Random rand = new Random();
     
-    public Empleado(String nombre, Cinta cinta, Avion avion, JTextArea jTextArea2, JTextArea jTextArea3, JLabel jLabel4, JLabel jLabel1, JLabel jLabel2, JLabel jLabel5, Paso paso, JLabel jLabel8){
-        this.nombre = nombre;
+    public Empleado(Cinta cinta, Avion avion, JTextArea jTextArea2, JTextArea jTextArea3, 
+            JLabel jLabel4, JLabel jLabel1, JLabel jLabel2, JLabel jLabel5, Paso paso, JLabel jLabel8, JTextArea jTextArea6){
         this.miCinta = cinta;
         this.miAvion = avion;
         this.jTextArea2 = jTextArea2;
@@ -33,6 +33,7 @@ public class Empleado extends Thread{
         this.jLabel5 = jLabel5;
         this.paso = paso;
         this.jLabel8 = jLabel8;
+        this.jTextArea6 = jTextArea6;
     }
     
     
@@ -44,7 +45,7 @@ public class Empleado extends Thread{
                 sleep((rand.nextInt(700-400) + 1) + 400);
             } catch(InterruptedException e){  }
             paso.Mirar(nombre);
-            String maleta = miCinta.cogeMaleta(nombre, jTextArea2, jLabel4,  jLabel1, jLabel2, jLabel8);     
+            String maleta = miCinta.cogeMaleta(nombre, jTextArea2, jLabel4,  jLabel1, jLabel2, jLabel8, jTextArea6);
             try{
                 sleep((rand.nextInt(700-400) + 1) + 400);
             } catch(InterruptedException e){  }
@@ -53,11 +54,15 @@ public class Empleado extends Thread{
         }
     }
     
+    
         public void maletasAvion(String maleta, JTextArea jTextArea3, JLabel jLabel5, Avion avion){
-            maletas_avion += 1;
             avion.getMaletas().add(maleta);
         jTextArea3.setText(jTextArea3.getText() + "Maleta: " + maleta + "\n");
-        jLabel5.setText(String.valueOf(maletas_avion));
+            jLabel5.setText(String.valueOf(avion.totalMaletas()));
+        }
+        
+        public void setNombre(String nombre){
+            this.nombre = nombre;
         }
         
     
