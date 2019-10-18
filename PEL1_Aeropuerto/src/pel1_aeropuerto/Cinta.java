@@ -11,6 +11,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.awt.event.*; 
 import java.awt.font.TextAttribute;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.AttributedString;
 import java.util.Map;
 import javax.swing.*; 
@@ -48,6 +50,9 @@ public class Cinta {
                 jLabel4.setText(String.valueOf(total_maletas));
                 jTextArea1.setText(jTextArea1.getText()+ Pasajero(id_maleta, nombre) + "\n" );  
                 jLabel1.setText(String.valueOf(contador_dejadas));
+                guardarDatos(nombre,maleta);
+                guardarDatosPasajeros(nombre);
+                guardarDatosMaletas();
                 mirarCinta.signalAll();
                 Maletas();
         }finally{
@@ -75,6 +80,8 @@ public class Cinta {
             mirarCinta.signalAll();
             jTextArea2.setText(jTextArea2.getText() + Empleado(nombre) + "\n");
             jLabel2.setText(String.valueOf(contador_cogidas));
+            guardarDatos(nombre,maleta); 
+            guardarDatosEmpleados(nombre,maleta);
             return maleta;
         }finally{
             lock.unlock();
@@ -99,6 +106,88 @@ public class Cinta {
     public String Maletas (){
         String mensaje="Total Maletas: " + total_maletas;
         return mensaje;
+    }
+    
+    
+    public void guardarDatos(String nombre, String id_maleta){
+        FileWriter historial = null;
+        PrintWriter hist_w = null;
+        try{
+            historial = new FileWriter("Historiales/Historial.txt", true);
+            hist_w = new PrintWriter(historial);
+            
+            if(nombre.contains("Dani")||nombre.contains("Jorge")){
+                hist_w.println("[+] " + nombre + " deja la maleta (" + id_maleta + ")");
+            }else{
+                hist_w.println("[-] " + nombre + " coge maleta (" + maleta + ")");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if (null != historial)
+                    historial.close();
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+        }
+    }
+    
+    public void guardarDatosEmpleados(String nombre, String id_maleta){
+        FileWriter historial = null;
+        PrintWriter hist_w = null;
+        try{
+            historial = new FileWriter("Historiales/Empleados.txt", true);
+            hist_w = new PrintWriter(historial);
+            hist_w.println("[+] " + nombre + " deja la maleta (" + id_maleta + ")");
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if (null != historial)
+                    historial.close();
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+        }       
+    }
+    
+    public void guardarDatosPasajeros(String nombre){
+        FileWriter historial = null;
+        PrintWriter hist_w = null;
+        try{
+            historial = new FileWriter("Historiales/Pasajeros.txt", true);
+            hist_w = new PrintWriter(historial);
+            hist_w.println("[-] " + nombre + " coge maleta (" + maleta + ")");
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if (null != historial)
+                    historial.close();
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+        }
+    }
+    
+    public void guardarDatosMaletas(){
+        FileWriter historial = null;
+        PrintWriter hist_w = null;
+        try{
+            historial = new FileWriter("Historiales/Maletas.txt", true);
+            hist_w = new PrintWriter(historial);
+            hist_w.println("Maleta: " + maleta );
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if (null != historial)
+                    historial.close();
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+        }
     }
     
     /*
