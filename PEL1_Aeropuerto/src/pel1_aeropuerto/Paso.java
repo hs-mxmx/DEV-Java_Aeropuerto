@@ -19,10 +19,11 @@ public class Paso {
     private Condition empleado1 = lock.newCondition();
     private Condition empleado2 = lock.newCondition();
     private Condition pasajeros = lock.newCondition();
+    private Condition empleados = lock.newCondition();
     private Condition global = lock.newCondition();
     private int pasajeros_bloqueados, total_bloqueados = 0;
     
-    private boolean c_empleado1 , c_empleado2, c_pasajeros, c_global = false;
+    private boolean c_empleado1 , c_empleado2, c_empleados, c_pasajeros, c_global = false;
      public void Mirar(String nombre){
         try{
             lock.lock();
@@ -37,6 +38,10 @@ public class Paso {
                 c_empleado2 = false;
                 try{
                     empleado2.await();
+                }catch(Exception ie){}
+            }while((nombre.contains("Dani")||nombre.contains("Jorge"))&& c_empleados){
+                try{
+                    empleados.await();
                 }catch(Exception ie){}
             /*}while(c_pasajeros && !nombre.contains("Dani") && !nombre.contains("Jorge")){
                //System.out.println("Cerrado Pasajeros");
@@ -79,6 +84,11 @@ public class Paso {
                     total_bloqueados -= 1;
                     global.signal();
                 }
+            }if(nombre.equals("jButton5")){
+                c_empleados=false;
+                for(int i = 0; i<2; i++){
+                    empleados.signal();
+                }
             }
         }
         finally{
@@ -100,6 +110,8 @@ public class Paso {
                 c_pasajeros=true;
             }if(nombre.equals("jButton3")){
                 c_global=true;
+            }if(nombre.equals("jButton5")){
+                c_empleados=true;
             }
         }finally{
             lock.unlock();
