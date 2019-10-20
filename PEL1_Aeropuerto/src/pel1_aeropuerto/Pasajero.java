@@ -1,12 +1,8 @@
-
-
 package pel1_aeropuerto;
 
 import java.util.*;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 public class Pasajero extends Thread {
     String nombre;

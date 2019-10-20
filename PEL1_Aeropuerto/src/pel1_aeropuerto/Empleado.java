@@ -1,5 +1,3 @@
-
-
 package pel1_aeropuerto;
 
 import static java.lang.Thread.sleep;
@@ -67,7 +65,7 @@ public class Empleado extends Thread{
         }
     }
     
-    
+        // Metodo para dejar maletas en el avion
         public void maletasAvion(String maleta, JTextArea jTextArea3, JLabel jLabel5, Avion avion){
             avion.getMaletas().add(maleta);
         jTextArea3.setText(jTextArea3.getText() + "Maleta: " + maleta + "\n");
@@ -78,6 +76,7 @@ public class Empleado extends Thread{
             this.nombre = nombre;
         }
         
+        // Metodo para cambiar el jLabel del empleado segun su accion
         public void estadoEmpleado(String nombre, int time, JLabel jLabel12, JLabel jLabel13){
             if(nombre.contains("Dani")){
                 if(time == 0){

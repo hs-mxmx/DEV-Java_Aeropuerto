@@ -1,22 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pel1_aeropuerto;
 
-import java.awt.Font;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.awt.event.*; 
-import java.awt.font.TextAttribute;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 import java.util.Random;
 import javax.swing.*; 
 
@@ -25,14 +14,13 @@ public class Cinta {
     
     private ArrayList <String> cinta;
     private String maleta;
+    private int maletas_e1, maletas_e2, contador_dejadas, contador_cogidas, total_maletas, posicion_random, pasajeros_abandonando;
+    private double tiempo_empleado, tiempo_empleado2, tiempo_pasajero;
     Random rand = new Random();
-    private int posicion_random, pasajeros_abandonando;
     private Lock lock = new ReentrantLock();
     private Condition mirarCinta = lock.newCondition();
-    private int maletas_e1, maletas_e2;
-    private double tiempo_empleado, tiempo_empleado2, tiempo_pasajero;
-    private int contador_dejadas = 0, contador_cogidas = 0;
-    private int total_maletas = 0;
+    
+    // Get images from project folder
     ImageIcon go = new ImageIcon(this.getClass().getResource("/images/go2.png"));
     ImageIcon stop = new ImageIcon(this.getClass().getResource("/images/Stop_hand.png"));
     
@@ -40,6 +28,7 @@ public class Cinta {
         cinta = new ArrayList<>();
     }
     
+    // Metodo dejar maleta (Pasajero)
     public void dejaMaleta(String nombre, String id_maleta, JTextArea jTextArea1, JLabel jLabel4,  
             JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6, double tiempo_cinta){
         try{
@@ -62,12 +51,15 @@ public class Cinta {
                 jTextArea1.setText(jTextArea1.getText()+ Pasajero(maleta, nombre) + "\n" );  
                 jTextArea6.setText(maletasCinta());
                 jLabel1.setText(String.valueOf(contador_dejadas));
+                // Tiempos
                 tiempo_pasajero = (System.nanoTime());
                 tiempo_pasajero = (tiempo_pasajero - tiempo_cinta);
                 tiempo_pasajero = (tiempo_pasajero/1000000000);
+                // Guardar Datos
                 guardarDatos(nombre,maleta, tiempo_pasajero);
                 guardarDatosPasajeros(nombre, tiempo_pasajero);
                 guardarDatosMaletas(tiempo_pasajero);
+                // Dar señal
                 mirarCinta.signalAll();
                 Maletas();
         }finally{
@@ -75,6 +67,7 @@ public class Cinta {
         }
     }
     
+    // Metodo coger maleta (Empleados)
     public String cogeMaleta(String nombre, JTextArea jTextArea2, JLabel jLabel4, 
             JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6, 
             JTextArea jTextArea7, JLabel jLabel10, JLabel jLabel11, double tiempo_cinta){
@@ -97,9 +90,12 @@ public class Cinta {
             jLabel4.setText(String.valueOf(total_maletas));
             jTextArea6.setText(maletasCinta());
             jLabel2.setText(String.valueOf(contador_cogidas));
+            // Tiempos
             tiempo_cinta = tiempoEmpleado(nombre, tiempo_cinta);
+            // Guardar datos
             guardarDatos(nombre,maleta, tiempo_cinta); 
             guardarDatosEmpleados(nombre,maleta, tiempo_cinta);
+            // Dar señal
             mirarCinta.signalAll();
             return maleta;
         }finally{
@@ -107,6 +103,8 @@ public class Cinta {
         }
     }
     
+    
+    // Metodo para calcular cuantos han dejado ambas maletas
     public void abandona(String nombre, JTextArea jTextArea4, JLabel jLabel16, double tiempo_abandono){
         jTextArea4.setText(jTextArea4.getText() + nombre + "\n");
         pasajeros_abandonando += 1;
@@ -114,25 +112,30 @@ public class Cinta {
     }
     
     
+    // Return Pasajero
     public String Pasajero (String id_maleta, String nombre){
         String mensaje= "[" + contador_dejadas + "] " + nombre + " deja la maleta (" + id_maleta + ")";
         return mensaje;
     }
     
+    // Return Empleado
     public String Empleado (String nombre){
         String mensaje= nombre + " coge maleta (" + maleta + ")";
         return mensaje;
     }
     
+    // Return Maletas
     public String Maletas (){
         String mensaje= "Total Maletas: " + total_maletas;
         return mensaje;
     }
     
+    // Get Total de maletas dejadas en la cinta
     public int getMaletas(){
         return total_maletas;
     }
     
+    // Metodo para calcular los tiempos de los empleados
     public double tiempoEmpleado(String nombre, double tiempo){
         if(nombre.contains("Dani")){
             tiempo_empleado = (System.nanoTime() + tiempo_empleado);
@@ -146,6 +149,8 @@ public class Cinta {
         return tiempo_empleado2;
     }
     
+    
+    // Metodo para devolver las maletas en cinta segun el contenido del arrayList
     public String maletasCinta(){
         int i = 0;
         String contenido = "";
@@ -159,6 +164,7 @@ public class Cinta {
         return contenido;
     }
     
+    // Metodo para generar una posicion random segun el tamaño del arrayList
     public String posicionRandom(ArrayList <String> cinta){
         int long_cinta = cinta.size()-1;
         if(!cinta.isEmpty()){
@@ -169,6 +175,7 @@ public class Cinta {
         return "";
     }
 
+    // Metodo para cambiar el JTextArea segun el empleado
     public void setTextEmpleado(String nombre, JTextArea jTextArea, JTextArea jTextArea2, JLabel jLabel, JLabel jLabel2){
         if(nombre.contains("Dani")){
             maletas_e1 += 1;
@@ -181,7 +188,7 @@ public class Cinta {
         }
     }
         
-    
+    // Metodo para guardar los datos del historial general
     public void guardarDatos(String nombre, String id_maleta, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -218,6 +225,7 @@ public class Cinta {
         }
     }
     
+    // Metodo para guardar los datos de los empleados en el historial empleados
     public void guardarDatosEmpleados(String nombre, String id_maleta, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -251,6 +259,7 @@ public class Cinta {
         }       
     }
     
+    // Metodo para guardar los datos de los pasajeros en el historial pasajeros
     public void guardarDatosPasajeros(String nombre, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -275,6 +284,7 @@ public class Cinta {
         }
     }
     
+    // Metodo para guardar los datos de las maletas en el historial maletas
     public void guardarDatosMaletas(double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;

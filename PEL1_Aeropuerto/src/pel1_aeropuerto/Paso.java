@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pel1_aeropuerto;
 
 import java.util.concurrent.locks.Condition;
@@ -22,8 +17,9 @@ public class Paso {
     private Condition empleados = lock.newCondition();
     private Condition global = lock.newCondition();
     private int pasajeros_bloqueados, total_bloqueados = 0;
-    
     private boolean c_empleado1 , c_empleado2, c_empleados, c_pasajeros, c_global = false;
+    
+    // Metodo que consulta cada uno de los hilos para saber si ha sido parado o no
      public void Mirar(String nombre){
         try{
             lock.lock();
@@ -61,6 +57,7 @@ public class Paso {
         }
     }
     
+    // Metodo que recibe el nombre del boton y abre segun este
     public void abrir(String nombre){
         try{
             lock.lock();
@@ -96,6 +93,7 @@ public class Paso {
         }
     }
     
+    // Metodo que recibe el nombre del boton y cierra segun este
     public void cerrar(String nombre){
         try{
             lock.lock();

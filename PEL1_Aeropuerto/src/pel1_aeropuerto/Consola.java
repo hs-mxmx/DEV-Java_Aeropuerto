@@ -1,19 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pel1_aeropuerto;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Date;
-import javax.swing.ImageIcon;
 
-/**
- *
- * @author dani
- */
+
 public class Consola extends javax.swing.JFrame {
 
     private boolean botonPulsado1, botonPulsado2 ,botonPulsado3, botonPulsado4, botonPulsado5 = false;
@@ -357,12 +348,16 @@ public class Consola extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if(!botonPulsado4)
         {
-            botonPulsado4=true;            
+            botonPulsado4=true;   
+            jButton4.setText("PARADO");
+            jButton4.setForeground(Color.black);
             paso.cerrar("jButton4");   
         }
         else
         {
-            botonPulsado4=false;           
+            botonPulsado4=false;
+            jButton4.setText("JORGE");
+            jButton4.setForeground(Color.white);
             paso.abrir("jButton4");    
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -370,12 +365,16 @@ public class Consola extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if(!botonPulsado3) 
         {
-            botonPulsado3=true;             
+            botonPulsado3=true;
+            jButton3.setText("PARADO");
+            jButton3.setForeground(Color.black);
             paso.cerrar("jButton3");    
         }
         else 
         {
-            botonPulsado3=false;            
+            botonPulsado3=false; 
+            jButton3.setText("GLOBAL");
+            jButton3.setForeground(Color.white);
             paso.abrir("jButton3");    
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -383,12 +382,16 @@ public class Consola extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if(!botonPulsado2) 
         {
-            botonPulsado2=true;            
+            botonPulsado2=true; 
+            jButton2.setText("PARADO");
+            jButton2.setForeground(Color.black);
             paso.cerrar("jButton2");   
         }
         else 
         {
-            botonPulsado2=false;           
+            botonPulsado2=false;
+            jButton2.setText("DANI");
+            jButton2.setForeground(Color.white);
             paso.abrir("jButton2");    
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -396,12 +399,16 @@ public class Consola extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if(!botonPulsado5)
         {
-            botonPulsado5=true;            
+            botonPulsado5=true;
+            jButton5.setText("PARADO");
+            jButton5.setForeground(Color.black);
             paso.cerrar("jButton5");    
         }
         else 
         {
-            botonPulsado5=false;            
+            botonPulsado5=false;
+            jButton5.setText("EMPLEADOS");
+            jButton5.setForeground(Color.white);
             paso.abrir("jButton5");    
         }
     }//GEN-LAST:event_jButton5ActionPerformed
