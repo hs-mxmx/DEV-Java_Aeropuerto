@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Avion.java</file>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Pasajero.java</file>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Paso.java</file>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Consola.java</file>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Empleado.java</file>
-            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/pel1_aeropuerto/Cinta.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Cliente/Consola.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Servidor/Servidor.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Cliente/Cliente.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Servidor/Consola.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Servidor/Aeropuerto.java</file>
+            <file>file:/C:/Users/dani/Desktop/Git_Aeropuerto/PEL1_Aeropuerto/src/Cliente/Aeropuerto.java</file>
         </group>
     </open-files>
 </project-private>
