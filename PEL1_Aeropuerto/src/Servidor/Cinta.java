@@ -16,22 +16,22 @@ public class Cinta {
     private String maleta;
     private int maletas_e1, maletas_e2, contador_dejadas, contador_cogidas, total_maletas, posicion_random, pasajeros_abandonando;
     private double tiempo_empleado, tiempo_empleado2, tiempo_pasajero;
-    Random rand = new Random();
-    private Paso paso;
+    private Random rand = new Random();
     private Lock lock = new ReentrantLock();
     private Condition mirarCinta = lock.newCondition();
     
-    // Get images from project folder
-    ImageIcon go = new ImageIcon(this.getClass().getResource("/images/go2.png"));
-    ImageIcon stop = new ImageIcon(this.getClass().getResource("/images/Stop_hand.png"));
+    //Get images from project folder
+    private ImageIcon go = new ImageIcon(this.getClass().getResource("/images/go2.png"));
+    private ImageIcon stop = new ImageIcon(this.getClass().getResource("/images/Stop_hand.png"));
     
+    /* Cinta */
     public Cinta(){
         cinta = new ArrayList<>();
     }
     
-    // Metodo dejar maleta (Pasajero)
-    public void dejaMaleta(String nombre, String id_maleta, JTextArea jTextArea1, JLabel jLabel4,  
-            JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6, double tiempo_cinta){
+    /* Metodo dejar maleta (Pasajero) */
+    public void dejaMaleta(String nombre, String id_maleta, JTextArea jTextArea1, JButton dnum_pasajeros,  
+            JButton dnum_maletascinta, JLabel jLabel8, JTextArea jTextArea6, double tiempo_cinta, JButton estado_cinta){
         try{
             lock.lock();
             while(cinta.size() >= 8){
@@ -39,40 +39,42 @@ public class Cinta {
                     mirarCinta.await();
                 }catch(Exception ie){}
             }
-                total_maletas += 1;
-                contador_dejadas += + 1;
-                maleta = id_maleta;
-                cinta.add(maleta);
-                //paso.Mirar(nombre);
-                if(cinta.size() == 8){
-                    jLabel8.setIcon(stop);
-                 }else{
-                     jLabel8.setIcon(go);
-                }
-                jLabel4.setText(String.valueOf(total_maletas));
-                jTextArea1.setText(jTextArea1.getText()+ Pasajero(maleta, nombre) + "\n" );  
-                jTextArea6.setText(maletasCinta());
-                jLabel1.setText(String.valueOf(contador_dejadas));
-                // Tiempos
-                tiempo_pasajero = (System.nanoTime());
-                tiempo_pasajero = (tiempo_pasajero - tiempo_cinta);
-                tiempo_pasajero = (tiempo_pasajero/1000000000);
-                // Guardar Datos
-                guardarDatos(nombre,maleta, tiempo_pasajero);
-                guardarDatosPasajeros(nombre, tiempo_pasajero);
-                guardarDatosMaletas(tiempo_pasajero);
-                // Dar señal
-                mirarCinta.signalAll();
-                Maletas();
+            total_maletas += 1;
+            contador_dejadas += + 1;
+            maleta = id_maleta;
+            cinta.add(maleta);
+            if(cinta.size() == 8){
+                jLabel8.setIcon(stop);
+                estado_cinta.setText("Cinta llena, espere su turno...");
+             }else{
+                jLabel8.setIcon(go);
+                estado_cinta.setText("Caben " + (8-(cinta.size()+1)) + " maletas");
+            }
+            
+            dnum_maletascinta.setText(String.valueOf(total_maletas));
+            jTextArea1.setText(jTextArea1.getText()+ mensajePasajero(maleta, nombre) + "\n" );  
+            jTextArea6.setText(maletasCinta());
+            dnum_pasajeros.setText(String.valueOf(contador_dejadas));
+            // Tiempos
+            tiempo_pasajero = (System.nanoTime());
+            tiempo_pasajero = (tiempo_pasajero - tiempo_cinta);
+            tiempo_pasajero = (tiempo_pasajero/1000000000);
+            // Guardar Datos
+            guardarDatos(nombre,maleta, tiempo_pasajero);
+            guardarDatosPasajeros(nombre, tiempo_pasajero);
+            guardarDatosMaletas(tiempo_pasajero);
+            // Dar señal
+            mirarCinta.signalAll();
+            mensajeMaletas();
         }finally{
             lock.unlock();
         }
     }
     
-    // Metodo coger maleta (Empleados)
-    public String cogeMaleta(String nombre, JTextArea jTextArea2, JLabel jLabel4, 
-            JLabel jLabel1,  JLabel jLabel2, JLabel jLabel8, JTextArea jTextArea6, 
-            JTextArea jTextArea7, JLabel jLabel10, JLabel jLabel11, double tiempo_cinta){
+    /* Metodo coger maleta (Empleados) */
+    public String cogeMaleta(String nombre, JTextArea jTextArea2, JButton dnum_maletascinta,  
+            JButton dnum_maletasrecogidas, JLabel jLabel8, JTextArea jTextArea6, 
+            JTextArea jTextArea7, JButton dnum_emp1, JButton dnum_emp2, double tiempo_cinta, JButton estado_cinta){
         try{
             lock.lock();
             while((cinta.isEmpty() && (contador_cogidas == contador_dejadas))|| contador_dejadas == 0){
@@ -83,15 +85,17 @@ public class Cinta {
             posicionRandom(cinta);
             if(cinta.size() == 8){
                 jLabel8.setIcon(stop);
-            }else{
+                estado_cinta.setText("Cinta llena, espere su turno...");
+             }else{
                 jLabel8.setIcon(go);
+                estado_cinta.setText("Caben " + (8-(cinta.size()+1)+1) + " maletas");
             }
             total_maletas -= 1;
             contador_cogidas += 1;
-            setTextEmpleado(nombre, jTextArea2, jTextArea7, jLabel10, jLabel11);
-            jLabel4.setText(String.valueOf(total_maletas));
+            setTextEmpleado(nombre, jTextArea2, jTextArea7, dnum_emp1, dnum_emp2);
+            dnum_maletascinta.setText(String.valueOf(total_maletas));
             jTextArea6.setText(maletasCinta());
-            jLabel2.setText(String.valueOf(contador_cogidas));
+            dnum_maletasrecogidas.setText(String.valueOf(contador_cogidas));
             // Tiempos
             tiempo_cinta = tiempoEmpleado(nombre, tiempo_cinta);
             // Guardar datos
@@ -106,39 +110,37 @@ public class Cinta {
     }
     
     
-    // Metodo para calcular cuantos han dejado ambas maletas
-    public void abandona(String nombre, JTextArea jTextArea4, JLabel jLabel16, double tiempo_abandono){
+    /* Metodo para calcular cuantos han dejado ambas maletas */
+    public void abandonaPasajero(String nombre, JTextArea jTextArea4, JButton dnum_completos, double tiempo_abandono){
         jTextArea4.setText(jTextArea4.getText() + nombre + "\n");
         pasajeros_abandonando += 1;
-        jLabel16.setText(String.valueOf(pasajeros_abandonando));
+        dnum_completos.setText(String.valueOf(pasajeros_abandonando));
     }
     
-    
-    // Return Pasajero
-    private String Pasajero (String id_maleta, String nombre){
+    /* Return Pasajero */
+    private String mensajePasajero (String id_maleta, String nombre){
         String mensaje= "[" + contador_dejadas + "] " + nombre + " deja la maleta (" + id_maleta + ")";
         return mensaje;
     }
     
-    // Return Empleado
-    private String Empleado (String nombre){
+    /* Return Empleado */
+    private String mensajeEmpleado (String nombre){
         String mensaje= nombre + " coge maleta (" + maleta + ")";
         return mensaje;
     }
     
-    // Return Maletas
-    private String Maletas (){
+    /* Return Maletas */
+    private String mensajeMaletas (){
         String mensaje= "Total Maletas: " + total_maletas;
         return mensaje;
     }
     
-    // Get Total de maletas dejadas en la cinta
+    /* Get Total de maletas dejadas en la cinta */
     private int getMaletas(){
         return total_maletas;
     }
     
-    
-    // Metodo para calcular los tiempos de los empleados
+    /* Metodo para calcular los tiempos de los empleados */
     private double tiempoEmpleado(String nombre, double tiempo){
         if(nombre.contains("Dani")){
             tiempo_empleado = (System.nanoTime() + tiempo_empleado);
@@ -152,14 +154,12 @@ public class Cinta {
         return tiempo_empleado2;
     }
     
-    
-    // Metodo para llevar la cinta al servidor
+    /* Metodo para llevar la cinta al servidor */
     public ArrayList<String> maletasServidor(){
         return cinta;
     }
     
-    
-    // Metodo para devolver las maletas en cinta segun el contenido del arrayList
+    /* Metodo para devolver las maletas en cinta segun el contenido del arrayList */
     private String maletasCinta(){
         int i = 0;
         String contenido = "";
@@ -173,7 +173,7 @@ public class Cinta {
         return contenido;
     }
     
-    // Metodo para generar una posicion random segun el tamaño del arrayList
+    /* Metodo para generar una posicion random segun el tamaño del arrayList */
     private String posicionRandom(ArrayList <String> cinta){
         int long_cinta = cinta.size()-1;
         if(!cinta.isEmpty()){
@@ -184,20 +184,22 @@ public class Cinta {
         return "";
     }
 
-    // Metodo para cambiar el JTextArea segun el empleado
-    private void setTextEmpleado(String nombre, JTextArea jTextArea, JTextArea jTextArea2, JLabel jLabel, JLabel jLabel2){
+    /* Metodo para cambiar el JTextArea segun el empleado */
+    private void setTextEmpleado(String nombre, JTextArea jTextArea, JTextArea jTextArea2, JButton dnum_emp1, JButton dnum_emp2){
         if(nombre.contains("Dani")){
             maletas_e1 += 1;
-            jLabel.setText(String.valueOf(maletas_e1));
-            jTextArea.setText(jTextArea.getText() + Empleado(nombre) + "\n");
+            dnum_emp1.setText(String.valueOf(maletas_e1));
+            jTextArea.setText(jTextArea.getText() + mensajeEmpleado(nombre) + "\n");
         }if(nombre.contains("Jorge")){
             maletas_e2 += 1;
-            jLabel2.setText(String.valueOf(maletas_e2));
-            jTextArea2.setText(jTextArea2.getText() + Empleado(nombre) + "\n");  
+            dnum_emp2.setText(String.valueOf(maletas_e2));
+            jTextArea2.setText(jTextArea2.getText() + mensajeEmpleado(nombre) + "\n");  
         }
     }
         
-    // Metodo para guardar los datos del historial general
+    
+    
+    /* Metodo para guardar los datos del historial general */
     private void guardarDatos(String nombre, String id_maleta, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -238,7 +240,7 @@ public class Cinta {
         }
     }
     
-    // Metodo para guardar los datos de los empleados en el historial empleados
+    /* Metodo para guardar los datos de los empleados en el historial empleados */
     private void guardarDatosEmpleados(String nombre, String id_maleta, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -276,7 +278,7 @@ public class Cinta {
         }       
     }
     
-    // Metodo para guardar los datos de los pasajeros en el historial pasajeros
+    /* Metodo para guardar los datos de los pasajeros en el historial pasajeros */
     private void guardarDatosPasajeros(String nombre, double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -305,7 +307,7 @@ public class Cinta {
         }
     }
     
-    // Metodo para guardar los datos de las maletas en el historial maletas
+    /* Metodo para guardar los datos de las maletas en el historial maletas */
     private void guardarDatosMaletas(double tiempo){
         FileWriter historial = null;
         PrintWriter hist_w = null;
@@ -332,26 +334,6 @@ public class Cinta {
                 e2.printStackTrace();
             }
         }
-    }
-    
-    /*
-    private AttributedString maleta_tachada(String id_maleta){
-        Font font = new Font("Cracked", Font.PLAIN, 12);
-        Map  attributes = font.getAttributes();
-        attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-        Font newFont = new Font(attributes);
-        maleta_tachada.addAttribute(TextAttribute.FONT, newFont);
-        return maleta_tachada;
-    }/*
-    
-    /*
-    public boolean hayMaletas(){
-        if(total_maletas>0){
-            return true;
-        }else{
-            return false;
-        }
-    }*/
-    
+    } 
 }
 

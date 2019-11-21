@@ -8,12 +8,9 @@ package Servidor;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +27,8 @@ public class Servidor{
     private DataOutputStream bufferSalida = null;
     private String inicio;
     private ArrayList<String> maletas = new ArrayList<>();
-    Scanner scanner = new Scanner(System.in);
      
+    /* Iniciar Sesion */
     public void iniciarSesion(int port, JButton jButton1){
         try{
             serverSocket = new ServerSocket(port);
@@ -47,6 +44,7 @@ public class Servidor{
         }
     }
     
+    /* Abrir Flujos del Servidor */
     public void abrirFlujos(){
         try{
             bufferEntrada = new DataInputStream(socket.getInputStream());
@@ -57,7 +55,7 @@ public class Servidor{
         }
     }
     
-    
+    /* Enviar datos de la cinta al cliente */
     public void enviarCinta(){
         try{
                 maletas = consola.cinta.maletasServidor();
@@ -70,9 +68,10 @@ public class Servidor{
         }
     }
     
+    /* Enviar datos del avión al cliente */
     public void enviarAvion(){
         try{
-            maletas = consola.avion.maletasServidor();
+            maletas = consola.avion.getMaletasServidor();
             bufferSalida.writeUTF(String.valueOf(maletas));
             bufferSalida.flush();
             //System.out.println("AVION: " + maletas);
@@ -82,29 +81,7 @@ public class Servidor{
         }   
     }
 
-    public void clienteSesion(){
-        try{
-            bufferSalida.writeUTF("Bienvenido!");
-            //System.out.println("[Servidor]: Bienvenido!");
-            bufferSalida.flush();
-            //System.out.print("[Servidor]: ");
-        }catch(IOException e){
-            System.out.println("Error durante la sesion del cliente... " + e.getMessage());
-        }
-    }
-    
-    public void cerrarSesion(){
-        try{
-            bufferEntrada.close();
-            bufferSalida.close();
-            socket.close();
-        }catch(IOException e){
-            System.out.println("Error durante el cierre de sesion... " + e.getMessage());
-        }finally{
-            System.out.println("Conexion finalizada...");
-        }
-    }
-     
+    /* Espera, Establece y Mantiene conexión */ 
     public void ejecutarConexion(int port, JButton jButton1){
         Thread hilo = new Thread(new Runnable(){
             @Override
@@ -132,14 +109,32 @@ public class Servidor{
         hilo.start();
     }
     
-    
-
-    
-    public String inicioCliente(){
-        return inicio;
+    /* Dar la bienvenida al cliente */
+    /*
+    public void clienteSesion(){
+        try{
+            bufferSalida.writeUTF("Bienvenido!");
+            //System.out.println("[Servidor]: Bienvenido!");
+            bufferSalida.flush();
+            //System.out.print("[Servidor]: ");
+        }catch(IOException e){
+            System.out.println("Error durante la sesion del cliente... " + e.getMessage());
+        }
     }
+    */
     
-    public void cintaServidor(ArrayList<String> cinta){
-        maletas = cinta;
+    /* Cerrar Sesión */
+    /*
+    public void cerrarSesion(){
+        try{
+            bufferEntrada.close();
+            bufferSalida.close();
+            socket.close();
+        }catch(IOException e){
+            System.out.println("Error durante el cierre de sesion... " + e.getMessage());
+        }finally{
+            System.out.println("Conexion finalizada...");
+        }
     }
+    */
 }

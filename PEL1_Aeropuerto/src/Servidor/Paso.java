@@ -4,13 +4,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- *
- * @author dani
- */
 public class Paso {
     
-    Lock lock = new ReentrantLock();
+    private Lock lock = new ReentrantLock();
     private Condition empleado1 = lock.newCondition();
     private Condition empleado2 = lock.newCondition();
     private Condition pasajeros = lock.newCondition();
@@ -19,7 +15,7 @@ public class Paso {
     private int pasajeros_bloqueados, total_bloqueados = 0;
     private boolean c_empleado1 , c_empleado2, c_empleados, c_pasajeros, c_global = false;
     
-    // Metodo que consulta cada uno de los hilos para saber si ha sido parado o no
+    /* Metodo que consulta cada uno de los hilos para saber si ha sido parado o no */
      public void Mirar(String nombre){
         try{
             lock.lock();
@@ -57,7 +53,7 @@ public class Paso {
         }
     }
     
-    // Metodo que recibe el nombre del boton y abre segun este
+    /* Metodo que recibe el nombre del boton y abre segun este */
     public void abrir(String nombre){
         try{
             lock.lock();
@@ -93,7 +89,7 @@ public class Paso {
         }
     }
     
-    // Metodo que recibe el nombre del boton y cierra segun este
+    /* Metodo que recibe el nombre del boton y cierra segun este */
     public void cerrar(String nombre){
         try{
             lock.lock();
