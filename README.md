@@ -20,10 +20,11 @@ Para esta segunda parte ha sido necesario implementar 'import java.net.*;'  y 'i
 Como futuras mejoras quedaría modificar la transmisión del tipo de dato, en vez de enviar datos de tipo String a través de la red me gustaría implementar una comunicaciónb basada en 'ObjectInputStream' y 'ObjectOutputStream' con el fin de poder tratar los datos como son realmente y no como conversiones modificadas.
 
 - Cumplimientos:
-- [x] Programación Concurrente
-- [x] Programación Distribuida
-- [x] Programación Orientada a Objetos
-- [x] Lenguaje de Programación Java
-- [x] Estructura bien diferenciada Cliente / Servidor
-- [ ] Comunicación Bidireccional (Implementada pero no se le da uso)
-- [ ] Multilenguaje en el código
+
+  - [x] Programación Concurrente
+  - [x] Programación Distribuida
+  - [x] Programación Orientada a Objetos
+  - [x] Lenguaje de Programación Java
+  - [x] Estructura bien diferenciada Cliente / Servidor
+  - [ ] Comunicación Bidireccional (Implementada pero no se le da uso)
+  - [ ] Multilenguaje en el código
