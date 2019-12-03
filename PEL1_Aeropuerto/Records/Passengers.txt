@@ -1,0 +1,19 @@
+
+	========== PASSENGERS ========== 		  == Times ==
+
+[-] Passenger 11 takes suitcase (Passenger 11-1)		[0.5183669]
+[-] Passenger 30 takes suitcase (Passenger 30-1)		[0.5618194]
+[-] Passenger 24 takes suitcase (Passenger 24-1)		[0.5852526]
+[-] Passenger 26 takes suitcase (Passenger 26-1)		[0.6045036]
+[-] Passenger 33 takes suitcase (Passenger 33-1)		[0.6242082]
+[-] Passenger 8 takes suitcase (Passenger 8-1)		[0.6472651]
+[-] Passenger 4 takes suitcase (Passenger 4-1)		[0.7137166]
+[-] Passenger 28 takes suitcase (Passenger 28-1)		[0.7288208]
+[-] Passenger 9 takes suitcase (Passenger 9-1)		[0.7507407]
+[-] Passenger 18 takes suitcase (Passenger 18-1)		[1.9143708]
+[-] Passenger 1 takes suitcase (Passenger 1-1)		[2.819842]
+[-] Passenger 23 takes suitcase (Passenger 23-1)		[4.1138344]
+[-] Passenger 37 takes suitcase (Passenger 37-1)		[5.3551269]
+[-] Passenger 15 takes suitcase (Passenger 15-1)		[6.519904]
+[-] Passenger 31 takes suitcase (Passenger 31-1)		[7.7117069]
+[-] Passenger 22 takes suitcase (Passenger 22-1)		[8.7568285]

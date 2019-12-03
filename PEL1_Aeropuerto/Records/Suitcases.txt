@@ -1,0 +1,19 @@
+
+	========== SUITCASES ========== 	  == Times ==
+
+	Suitcase: Passenger 11-1		[0.5183669]
+	Suitcase: Passenger 30-1		[0.5618194]
+	Suitcase: Passenger 24-1		[0.5852526]
+	Suitcase: Passenger 26-1		[0.6045036]
+	Suitcase: Passenger 33-1		[0.6242082]
+	Suitcase: Passenger 8-1		[0.6472651]
+	Suitcase: Passenger 4-1		[0.7137166]
+	Suitcase: Passenger 28-1		[0.7288208]
+	Suitcase: Passenger 9-1		[0.7507407]
+	Suitcase: Passenger 18-1		[1.9143708]
+	Suitcase: Passenger 1-1		[2.819842]
+	Suitcase: Passenger 23-1		[4.1138344]
+	Suitcase: Passenger 37-1		[5.3551269]
+	Suitcase: Passenger 15-1		[6.519904]
+	Suitcase: Passenger 31-1		[7.7117069]
+	Suitcase: Passenger 22-1		[8.7568285]

@@ -1,0 +1,17 @@
+
+	========== EMPLOYEES ========== 	  == Times ==
+[+] Dani left suitcase (Passenger 11-1)		[0.1840792]
+[-] Dani comes back from plane 			[0.0065648]
+[+] Dani left suitcase (Passenger 26-1)		[0.001791100125]
+[-] Dani comes back from plane 			[0.0012248]
+[+] Dani left suitcase (Passenger 18-1)		[9.513E-4]
+[-] Dani comes back from plane 			[0.0014719]
+[+] Dani left suitcase (Passenger 30-1)		[0.0021295]
+[-] Dani comes back from plane 			[0.0032549]
+[+] Dani left suitcase (Passenger 23-1)		[0.0020593]
+[-] Dani comes back from plane 			[4.473E-4]
+[+] Dani left suitcase (Passenger 37-1)		[0.0020035]
+[-] Dani comes back from plane 			[0.0015823]
+[+] Dani left suitcase (Passenger 15-1)		[0.0013304]
+[-] Dani comes back from plane 			[0.0015573]
+[+] Dani left suitcase (Passenger 33-1)		[3.809E-4]
