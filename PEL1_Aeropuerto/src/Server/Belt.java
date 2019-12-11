@@ -2,49 +2,75 @@ package Server;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*; 
 
 
 public class Belt {
+    
     /* Variables */
     private final ArrayList <String> belt;
     private final Random rand = new Random();
     private final Lock lock = new ReentrantLock();
+    private final Condition freeBelt = lock.newCondition();
     private final Condition checkBelt = lock.newCondition();
     private String suitCase;
     private int cases_e1, cases_e2, total_casesLeft, total_casesPicked, totalCases, belt_randomPos, left_passenger;
     private double employee_time, employee2_time, time_passenger;
     private final int belt_maxSize = 8;
     private final int max_time = 1000000000;
-
+    private final Record record = new Record();
+    private final Console_Components components;
     
+    /* Components */
+    private final JButton dnum_passengers;
+    private final JButton dnum_casesBelt;
+    private final JButton dnum_completed;
+    private final JButton beltStatus;
+    private final JButton dnum_pickUpCases;
+    private final JButton dnum_emp1;
+    private final JButton dnum_emp2;
+    
+    private final JTextArea jText_totalPassengers;
+    private final JTextArea jTextArea_completedPassengers;
+    private final JTextArea jText_totalCases;
+    private final JTextArea jTextArea_emp1;
+    private final JTextArea jTextArea_emp2;
+    
+    private final JLabel status_icon;
     /* Get images from project folder */
     private final ImageIcon go = new ImageIcon(this.getClass().getResource("/images/go2.png"));
     private final ImageIcon stop = new ImageIcon(this.getClass().getResource("/images/Stop_hand.png"));
     
     /* Belt */
-    public Belt(){
+    public Belt(Console_Components components){
+        this.components = components;
         belt = new ArrayList<>();
+        dnum_passengers = components.get_dnum_passengers();
+        dnum_casesBelt = components.get_dnum_casesBelt();
+        dnum_completed = components.get_dnum_completed();
+        beltStatus = components.get_beltStatus();
+        dnum_pickUpCases = components.get_dnum_pickUpCases();
+        dnum_emp1 = components.get_dnum_emp1();
+        dnum_emp2 = components.get_dnum_emp2();
+        
+        jText_totalPassengers = components.get_jText_totalPassengers();
+        jTextArea_completedPassengers = components.get_jTextArea_completedPassengers();
+        jText_totalCases = components.get_jText_totalCases();
+        jTextArea_emp1 = components.get_jTextArea_emp1();
+        jTextArea_emp2 = components.get_jTextArea_emp2();
+        
+        status_icon = components.get_status_icon();
     }
     
     /**
      * Method used by the passenger which he is going to use to leave the suitcase on the belt
      * @param name String
      * @param id_maleta String
-     * @param jText_passenger JTextArea
-     * @param dnum_passengers JButton
-     * @param dnum_cases JButton
-     * @param belt_icon JLabel
-     * @param jText_beltStatus JTextArea
      * @param belt_time double
-     * @param belt_status JButton
      */
-    public void leftCase(String name, String id_maleta, JTextArea jText_passenger, JButton dnum_passengers,  
-            JButton dnum_cases, JLabel belt_icon, JTextArea jText_beltStatus, double belt_time, JButton belt_status){
+    public void leftCase(String name, String id_maleta, double belt_time){
         try{
             lock.lock();
             while(belt.size() >= belt_maxSize){
@@ -57,27 +83,27 @@ public class Belt {
             suitCase = id_maleta;
             belt.add(suitCase);
             if(belt.size() == belt_maxSize){
-                belt_icon.setIcon(stop);
-                belt_status.setText("Belt full, wait...");
+                status_icon.setIcon(stop);
+                beltStatus.setText("Belt full, wait...");
              }else{
-                belt_icon.setIcon(go);
-                belt_status.setText("Fit " + (belt_maxSize-(belt.size()+1)) + " suitcases");
+                status_icon.setIcon(go);
+                beltStatus.setText("Fit " + (belt_maxSize-(belt.size()+1)) + " suitcases");
             }
             // SetText
-            dnum_cases.setText(String.valueOf(totalCases));
-            jText_passenger.setText(jText_passenger.getText()+ passengerData(suitCase, name) + "\n" );  
-            jText_beltStatus.setText(beltCases());
+            dnum_casesBelt.setText(String.valueOf(totalCases));
+            jText_totalPassengers.setText(jText_totalPassengers.getText()+ passengerData(suitCase, name) + "\n" );  
+            jText_totalCases.setText(beltCases());
             dnum_passengers.setText(String.valueOf(total_casesLeft));
             // Times
             time_passenger = (System.nanoTime());
             time_passenger = (time_passenger - belt_time);
             time_passenger = (time_passenger/max_time);
             // Save and record data
-            saveRecord(name,suitCase, time_passenger);
-            savePassengerRecord(name, time_passenger);
-            saveCaseRecords(time_passenger);
+            record.saveRecord(name,suitCase, time_passenger, total_casesLeft);
+            record.savePassengerRecord(name, time_passenger, suitCase, total_casesLeft);
+            record.saveCaseRecords(time_passenger,suitCase, total_casesLeft);
             // Signal
-            checkBelt.signalAll();
+            freeBelt.signalAll();
             caseMessage();
         }finally{
             lock.unlock();
@@ -87,35 +113,24 @@ public class Belt {
     /**
      * Method used by the employee which he is going to use to pick up the suitcases from the belt
      * @param name String
-     * @param jTextArea_emp1 JTextArea
-     * @param dnum_casesBelt JButton
-     * @param dnum_pickUpCases JButton
-     * @param status_icon JLabel
-     * @param jText_totalCases JTextArea
-     * @param jTextArea_emp2 JTextArea
-     * @param dnum_emp1 JButton
-     * @param dnum_emp2 JButton
      * @param belt_time double
-     * @param belt_status JButton
      * @return suitcase
      */
-    public String pickCase(String name, JTextArea jTextArea_emp1, JButton dnum_casesBelt,  
-            JButton dnum_pickUpCases, JLabel status_icon, JTextArea jText_totalCases, 
-            JTextArea jTextArea_emp2, JButton dnum_emp1, JButton dnum_emp2, double belt_time, JButton belt_status){
+    public String pickCase(String name, double belt_time){
         try{
             lock.lock();
             while((belt.isEmpty() && (total_casesPicked == total_casesLeft))|| total_casesLeft == 0){
                 try{
-                    checkBelt.await();
+                    freeBelt.await();
                 }catch(Exception ie){}
             }
             randomPos(belt);
             if(belt.size() == belt_maxSize){
                 status_icon.setIcon(stop);
-                belt_status.setText("Belt full, wait for your turn...");
+                beltStatus.setText("Belt full, wait for your turn...");
              }else{
                 status_icon.setIcon(go);
-                belt_status.setText("Fit " + (belt_maxSize-(belt.size()+1)+1) + " suitcases");
+                beltStatus.setText("Fit " + (belt_maxSize-(belt.size()+1)+1) + " suitcases");
             }
             // Variables modified
             totalCases -= 1;
@@ -128,8 +143,8 @@ public class Belt {
             // Times
             belt_time = employeeTime(name, belt_time);
             // Save and record data
-            saveRecord(name,suitCase, belt_time); 
-            saveEmployeeRecord(name,suitCase, belt_time);
+            record.saveRecord(name,suitCase, belt_time, total_casesLeft); 
+            record.saveEmployeeRecord(name,suitCase, belt_time, total_casesPicked);
             // Signal
             checkBelt.signalAll();
             return suitCase;
@@ -142,11 +157,9 @@ public class Belt {
     /**
      * Method used to calculate the total number of passengers who left both suitcases
      * @param name String
-     * @param jTextLeft JTextArea
-     * @param dnum_completed JButton
      */
-    public void leftPassenger(String name, JTextArea jTextLeft, JButton dnum_completed){
-        jTextLeft.setText(jTextLeft.getText() + name + "\n");
+    public void leftPassenger(String name){
+        jTextArea_completedPassengers.setText(jTextArea_completedPassengers.getText() + name + "\n");
         left_passenger += 1;
         dnum_completed.setText(String.valueOf(left_passenger));
     }
@@ -181,13 +194,6 @@ public class Belt {
         return message;
     }
     
-    /**
-     * Method to get all cases left on the belt
-     * @return totalCases
-     */
-    private int getCases(){
-        return totalCases;
-    }
     
     /**
      * Method used to calculate times from employees whenever they take a suitcase
@@ -267,153 +273,6 @@ public class Belt {
             jTextArea_emp2.setText(jTextArea_emp2.getText() + employeeData(name) + "\n");  
         }
     }
-        
-    
-    
-    /**
-     * Method used to save data on General's Record
-     * @param name String
-     * @param id_case String
-     * @param time double
-     */
-    private void saveRecord(String name, String id_case, double time){
-        FileWriter historial = null;
-        PrintWriter hist_w = null;
-        try{
-            //if(total_casesLeft == 1){
-            //    historial = new FileWriter("Records/General.txt");
-            //}else{
-                historial = new FileWriter("Records/General.txt",true);
-            //}
-            hist_w = new PrintWriter(historial);
-            if(total_casesLeft == 1){
-                if(name.contains("Dani")){
-                    hist_w.println("\n\t========== HISTORIAL ========== \t\t  == Times ==\n"
-                            + "\n[+] " + name + " left suitcase (" + id_case + ")" + "\t\t\t[" + time + "]");
-                }if(name.contains("Jorge")){
-                    hist_w.println("\n\t========== HISTORIAL ========== \t\t  == Times ==\n"
-                            + "\n[+] " + name + " left suitcase (" + id_case + ")" + "\t\t\t[" + time + "]");
-                }else{
-                    hist_w.println("\n\t========== HISTORIAL ========== \t\t  == Times ==\n"
-                            + "\n[-] " + name + " takes suitcase (" + suitCase + ")" + "\t\t[" + time + "]");
-                }
-            }else{
-                if(name.contains("Dani")||name.contains("Jorge")){
-                    hist_w.println("[+] " + name + " left suitcase (" + id_case + ")" + "\t\t\t[" + time + "]");
-                }else{
-                    hist_w.println("[-] " + name + " takes suitcase (" + suitCase + ")" + "\t\t[" + time + "]");
-                }  
-            }
-        }catch(Exception e){
-        }finally{
-            try{
-                if (null != historial)
-                    historial.close();
-            }catch(Exception e2){
-            }
-        }
-    }
-    
-    /**
-     * Method used to save data from employees on Employees' Record
-     * @param name String
-     * @param id_case String
-     * @param time double
-     */
-    private void saveEmployeeRecord(String name, String id_case, double time){
-        FileWriter historial = null;
-        PrintWriter hist_w = null;
-        try{
-            //if(total_casesPicked == 1){
-            //    historial = new FileWriter("Records/Employees.txt");
-            //}else{
-                historial = new FileWriter("Records/Employees.txt", true);
-            //}
-            hist_w = new PrintWriter(historial);
-            if(total_casesPicked == 1){
-                if(name.contains("Dani")){
-                    hist_w.println("\n\t========== EMPLOYEES ========== \t  == Times ==\n"
-                            + "[+] " + name + " left suitcase (" + id_case + ")" + "\t\t[" + time + "]");
-                }else{
-                    hist_w.println("\n\t========== EMPLOYEES ========== \t  == Times ==\n"
-                            + "[+] " + name + " left suitcase (" + id_case + ")" + "\t[" + time + "]");  
-                }
-            }else{
-                if(name.contains("Dani")){
-                    hist_w.println("[+] " + name + " left suitcase (" + id_case + ")" + "\t\t[" + time + "]");
-                }else{
-                    hist_w.println("[+] " + name + " left suitcase (" + id_case + ")" + "\t[" + time + "]");  
-                }
-            }
-        }catch(Exception e){
-        }finally{
-            try{
-                if (null != historial)
-                    historial.close();
-            }catch(Exception e2){
-            }
-        }       
-    }
-    
-    /**
-     * Method used to save data from passengers on Passengers' Record
-     * @param name String
-     * @param time double
-     */
-    private void savePassengerRecord(String name, double time){
-        FileWriter historial = null;
-        PrintWriter hist_w = null;
-        try{
-            //if(total_casesLeft == 1){
-            //    historial = new FileWriter("Records/Passengers.txt");
-            //}else{
-                historial = new FileWriter("Records/Passengers.txt", true);
-            //}
-            hist_w = new PrintWriter(historial);
-            if(total_casesLeft==1){
-                hist_w.println("\n\t========== PASSENGERS ========== \t\t  == Times =="
-                        + "\n\n[-] " + name + " takes suitcase (" + suitCase + ")" + "\t\t[" + time + "]");
-            }else{
-            hist_w.println("[-] " + name + " takes suitcase (" + suitCase + ")" + "\t\t[" + time + "]");
-            }
-        }catch(Exception e){
-        }finally{
-            try{
-                if (null != historial)
-                    historial.close();
-            }catch(Exception e2){
-            }
-        }
-    }
-    
-    /**
-     * Method used to save data from suitcases on Suitcases' Record
-     * @param time double
-     */
-    private void saveCaseRecords(double time){
-        FileWriter historial = null;
-        PrintWriter hist_w = null;
-        try{
-            //if(contador_dejadas == 1){
-            //    historial = new FileWriter("Historiales/Maletas.txt");
-            //}else{
-                historial = new FileWriter("Records/Suitcases.txt", true);
-            //}
-            hist_w = new PrintWriter(historial);
-            if(total_casesLeft == 1){
-                hist_w.println("\n\t========== SUITCASES ========== \t  == Times ==\n"
-                        + "\n\tSuitcase: " + suitCase + "\t\t[" + time + "]");
-            }else{
-                hist_w.println("\tSuitcase: " + suitCase + "\t\t[" + time + "]");
-            }
-        }catch(Exception e){
-        }finally{
-            try{
-                if (null != historial)
-                    historial.close();
-            }catch(Exception e2){
-            }
-        }
-    } 
+         
 }
 

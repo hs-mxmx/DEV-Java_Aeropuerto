@@ -21,14 +21,14 @@ public class Server{
     /**
      * Method to enable and establish connection with Client
      * @param port int
-     * @param jButton1 JButton 
+     * @param launchButton JButton 
      */
-    public void logOn(int port, JButton jButton1){
+    public void logOn(int port, JButton launchButton){
         try{
             serverSocket = new ServerSocket(port);
             socket = serverSocket.accept();
             String sessionMessage = ("Establishing connection with the client " + socket.getInetAddress().getCanonicalHostName() + "\n");
-            jButton1.setText(sessionMessage);
+            launchButton.setText(sessionMessage);
             System.out.println(sessionMessage);
         }catch(Exception e){
             System.out.println("Couldn't establish connection..." + e.getMessage());
@@ -53,12 +53,12 @@ public class Server{
      */
     public void sendBelt(){
         try{
-                suitCases = console.belt.serverCases();
+                suitCases = console.belt_final.serverCases();
                 outputStream.writeUTF(String.valueOf(suitCases));
                 outputStream.flush();
                 suitCases = null;
         }catch(IOException e){
-            System.out.println("Error en durante el envio... " + e.getMessage());
+            System.out.println("Error while sending data... " + e.getMessage());
         }
     }
     
@@ -67,7 +67,7 @@ public class Server{
      */
     public void sendAirplane(){
         try{
-            suitCases = console.airport.getCasesServer();
+            suitCases = console.airplane_final.getCasesServer();
             outputStream.writeUTF(String.valueOf(suitCases));
             outputStream.flush();
             suitCases = null;
@@ -79,13 +79,13 @@ public class Server{
     /**
      * Method to execute, wait and maintain Connection with Client
      * @param port int
-     * @param launchClient JButton 
+     * @param launchButton JButton 
      */
-    public void executeConnection(int port, JButton launchClient){
+    public void executeConnection(int port, JButton launchButton){
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run(){
-                logOn(port, launchClient);
+                logOn(port, launchButton);
                 openFlows();
                 try {
                     Console cons = new Console();

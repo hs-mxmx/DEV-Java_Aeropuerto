@@ -1,6 +1,4 @@
 package Server;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -8,42 +6,38 @@ import javax.swing.JTextArea;
 public class Airplane {
         /* Variables */
         private final ArrayList <String> suitCases;
-        private int total_cases;
         private double employee_time;
         private final int max_time = 1000000000;
+        private final Console_Components components;
+        Record record = new Record();
         
-        
+        /* Components */
+        private final JButton dnum_casesAirport;
+        private final JTextArea jTextArea_airportCases;
+
         /* Airplane */
-        public Airplane() {
+        public Airplane(Console_Components components) {
             suitCases = new ArrayList<>();
+            this.components = components;
+            this.dnum_casesAirport = components.get_dnum_casesAirport();
+            this.jTextArea_airportCases = components.get_jTextArea_airportCases();
         }
         
         /**
          * Method used by Employees to leave the cases they've picked on the belt to the airplane
          * @param name String
          * @param suitCase String
-         * @param jTextArea_airportCases jTextArea
-         * @param dnum_maletasAvion JButton
          * @param myPlane Airplane
          * @param plane_time double
          */
-        public synchronized void casesPlane(String name, String suitCase, JTextArea jTextArea_airportCases, JButton dnum_maletasAvion, Airplane myPlane, double plane_time){
+        public synchronized void casesPlane(String name, String suitCase, Airplane myPlane, double plane_time){
             suitCases.add(suitCase);
             jTextArea_airportCases.setText(jTextArea_airportCases.getText() + "Suitcase: " + suitCase + "\n");
-            dnum_maletasAvion.setText(String.valueOf(myPlane.getTotalCases()));
+            dnum_casesAirport.setText(String.valueOf(myPlane.suitCases.size()));
             employee_time = (System.nanoTime());
             employee_time = (employee_time - plane_time);
             employee_time = (employee_time/max_time);
-            saveData(name, employee_time);
-        }
-        
-        /**
-         * Method used to get total cases left on the airplane
-         * @return total_cases
-         */
-        public int getTotalCases(){
-            total_cases += 1;
-            return total_cases;
+            record.saveDataPlane(name, employee_time, suitCase);
         }
         
         /**
@@ -54,31 +48,6 @@ public class Airplane {
             return suitCases;
         }
         
-        /**
-         * Method used to save data on general record from employees status
-         * @param name String
-         * @param time double
-         */
-        public void saveData(String name, double time){
-            FileWriter historial = null;
-            PrintWriter hist_w = null;
-            try{
-                historial = new FileWriter("Records/Employees.txt",true);
-                hist_w = new PrintWriter(historial);
-                if(name.contains("Dani")){
-                    hist_w.println("[-] " + name + " comes back from plane " + "\t\t\t[" + time + "]");
-                }else{
-                    hist_w.println("[-] " + name + " comes back from plane " + "\t\t[" + time + "]");
-                }
-            }catch(Exception e){
-            }finally{
-                try{
-                    if (null != historial)
-                        historial.close();
-                }catch(Exception e2){
-                }
-            }
-        }   
           
     }
     

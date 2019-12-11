@@ -64,14 +64,17 @@ public class Client_Console extends javax.swing.JFrame {
 
         jButton3.setBackground(new java.awt.Color(0, 0, 0));
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/SpaceStation.png"))); // NOI18N
+        jButton3.setFocusable(false);
         jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 570, -1));
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jButton1.setText("Belt");
+        jButton1.setFocusable(false);
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 840, -1));
 
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jButton2.setText("Airport");
+        jButton2.setFocusable(false);
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 840, -1));
 
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -82,6 +85,7 @@ public class Client_Console extends javax.swing.JFrame {
         jText_belt.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jText_belt.setForeground(new java.awt.Color(102, 204, 0));
         jText_belt.setRows(5);
+        jText_belt.setFocusable(false);
         jScrollPane2.setViewportView(jText_belt);
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 200, 840, 82));
@@ -93,6 +97,7 @@ public class Client_Console extends javax.swing.JFrame {
         jText_airport.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jText_airport.setForeground(new java.awt.Color(0, 204, 204));
         jText_airport.setTabSize(0);
+        jText_airport.setFocusable(false);
         jScrollPane1.setViewportView(jText_airport);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, 840, 82));
@@ -106,6 +111,7 @@ public class Client_Console extends javax.swing.JFrame {
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 20, 480));
 
         jButton4.setBackground(new java.awt.Color(0, 0, 51));
+        jButton4.setFocusable(false);
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 880, 350));
 
         jLabel9.setBackground(new java.awt.Color(0, 0, 0));

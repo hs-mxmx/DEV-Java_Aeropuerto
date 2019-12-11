@@ -4,9 +4,9 @@ import Client.Client_Console;
 import Client.Client_Launcher;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+
 
 public class Launcher extends javax.swing.JFrame{
     private final String localHost = "127.0.0.1";
@@ -18,7 +18,6 @@ public class Launcher extends javax.swing.JFrame{
     private final Color black = new Color(0,0,0);
     private final int max_Port = 65535;
     private boolean remote, local, executed = false;
-    private String port;
     private Client_Console client_console;
     private Console server_console;
     private Client client;
@@ -36,7 +35,7 @@ public class Launcher extends javax.swing.JFrame{
         jLabel19 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        launchButton = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
@@ -61,15 +60,15 @@ public class Launcher extends javax.swing.JFrame{
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/SPACE-STATION.png"))); // NOI18N
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 50, 520, 70));
 
-        jButton1.setBackground(new java.awt.Color(204, 0, 0));
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jButton1.setText("LAUNCH");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        launchButton.setBackground(new java.awt.Color(204, 0, 0));
+        launchButton.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        launchButton.setText("LAUNCH");
+        launchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 420, 260, 70));
+        getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 420, 260, 70));
 
         jButton4.setBackground(new java.awt.Color(0, 0, 0));
         jButton4.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
@@ -138,7 +137,7 @@ public class Launcher extends javax.swing.JFrame{
             jButton4.setForeground(Color.black);
             jButton5.setForeground(dark_Gray);
             jButton5.setBackground(black);
-            jTextField1.setText("'Introduce port (5000)'");
+            jTextField1.setText("'Introduce a port (5000)'");
             jTextField2.setText(("Executed via LocalHost"));
             jTextField1.setEditable(true);
             jTextField2.setEditable(false);
@@ -170,47 +169,54 @@ public class Launcher extends javax.swing.JFrame{
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(remote || local){
-            Server servidor = new Server();
-            if(remote){
-                 port = jTextField1.getText();
-            }else{
-                 port = jTextField2.getText();
-            }
-            if(port.contains("'Introduce a port (5000)'")){
-                port = String.valueOf(localPort);
-                servidor.executeConnection(Integer.parseInt(port), jButton1);
-                jButton1.setForeground(white);
-                jButton1.setBackground(dark_Blue);
-                jButton1.setFont(new Font("", Font.BOLD, 12));
-                jButton1.setText("Waiting for connection on port " + port);
-                executed = true;
-            }
-            int port = Integer.valueOf(this.port);
-            if((port < 0 || port >= max_Port)&& !executed){
-                if(this.port.length()<=0)this.port = "5000";
-                servidor.executeConnection(Integer.parseInt(this.port), jButton1);
-                jButton1.setForeground(white);
-                jButton1.setBackground(dark_Blue);
-                jButton1.setFont(new Font("", Font.BOLD, 12));
-                jButton1.setText("Waiting for connection on port " + this.port);
-            }if(local){
-                 Client temp_client = new Client();
-                 this.client = temp_client;
-                 Client_Launcher temp_client_airport = new Client_Launcher();
-                 client_airport = temp_client_airport;
-                 JButton boton_cliente = client_airport.launchButton();
-                 this.client.executeConnection(localHost, Integer.valueOf(this.port), boton_cliente);
-                 Client_Console consola = new Client_Console();
-                 client_console = consola;       
-                 Console consola_serv;
-                try {
-                    consola_serv = new Console();
-                    server_console = consola_serv;
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
+        int port = 0;
+        try{
+            if(remote || local){
+                Server server = new Server();
+                if(remote){
+                    if(jTextField1.getText().contains("'Introduce a port (5000)'")){
+                        port = 5000;
+                        server.executeConnection(port, launchButton);
+                        executed = true;
+                    }else{
+                        port = Integer.parseInt(jTextField1.getText());
+                    }
+                }else{
+                    if(jTextField2.getText().contains("'Introduce a port (5000)'")){
+                        port = 5000;
+                        server.executeConnection(port, launchButton);
+                        executed = true;
+                    }else{
+                        port = Integer.parseInt(jTextField2.getText());
+                    }  
                 }
-            }
+                if(port<0 || port >= max_Port) port = 5000;
+                if(!executed)server.executeConnection(port, launchButton);
+                launchButton.setForeground(white);
+                launchButton.setBackground(dark_Blue);
+                launchButton.setFont(new Font("", Font.BOLD, 12));
+                launchButton.setText("Waiting for connection on port " + port);
+                if(local){
+                    Client temp_client = new Client();
+                    this.client = temp_client;
+                    Client_Launcher temp_client_airport = new Client_Launcher();
+                    client_airport = temp_client_airport;
+                    JButton client_button = client_airport.launchButton();
+                    this.client.executeConnection(localHost, port, client_button);
+                    Client_Console console = new Client_Console();
+                    client_console = console;
+                    Console console_serv;
+                    try{
+                        console_serv = new Console();
+                        server_console = console_serv;
+                    }catch(InterruptedException ex){
+                        System.out.println(ex.getMessage());
+                    }
+                }
+
+                }
+            }catch(Exception io){
+                JOptionPane.showMessageDialog(null,"Please, specify a valid port!", "Problem!", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -245,7 +251,7 @@ public class Launcher extends javax.swing.JFrame{
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton launchButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -259,3 +265,5 @@ public class Launcher extends javax.swing.JFrame{
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
+
+

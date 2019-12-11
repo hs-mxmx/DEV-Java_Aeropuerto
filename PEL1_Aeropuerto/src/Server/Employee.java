@@ -2,18 +2,13 @@ package Server;
 import static java.lang.Thread.sleep;
 import java.util.Random;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-
 
 public class Employee extends Thread{
     /* Variables */
     private final Belt myBelt;
     private final Leap leap;
     private final Airplane myPlane;
-    private final JTextArea jTextArea_emp1, jTextArea_AirplaneCases, jText_totalCases, jTextArea_emp2;
-    private final JLabel status_icon;
-    private final JButton  dnum_casesBelt, dnum_pickUpCases, demp1, demp2, dnum_emp1, dnum_emp2, dnum_casesAirplane, belt_status;
+    private final JButton demp1, demp2;
     private final Random rand = new Random();
     private final int maxTime = 700;
     private final int minTime = 400;
@@ -22,27 +17,12 @@ public class Employee extends Thread{
     
     
     /* Employee */
-    public Employee(Belt belt, Airplane myPlane, JTextArea jTextArea_emp1, JTextArea jTextArea_AirplaneCases, 
-            JButton dnum_passengers, JButton dnum_casesBelt, JButton dnum_pickUpCases, JButton dnum_casesAirplane, Leap leap, 
-            JLabel status_icon, JTextArea jText_totalCases, JTextArea jTextArea_emp2, JButton dnum_emp1, 
-            JButton dnum_emp2, JButton demp1, JButton demp2, JButton belt_status){
-        
+    public Employee(Belt belt, Airplane myPlane, Leap leap, Console_Components components){
         this.myBelt = belt;
         this.myPlane = myPlane;
-        this.jTextArea_emp1 = jTextArea_emp1;
-        this.jTextArea_AirplaneCases = jTextArea_AirplaneCases;
-        this.jText_totalCases = jText_totalCases;
-        this.jTextArea_emp2 = jTextArea_emp2;
-        this.dnum_casesBelt = dnum_casesBelt;
-        this.dnum_pickUpCases = dnum_pickUpCases;
-        this.dnum_casesAirplane = dnum_casesAirplane;
         this.leap = leap;
-        this.status_icon = status_icon;
-        this.dnum_emp1 = dnum_emp1;
-        this.dnum_emp2 = dnum_emp2;
-        this.demp1 = demp1;
-        this.demp2 = demp2;
-        this.belt_status = belt_status;
+        this.demp1 = components.get_demp1();
+        this.demp2 = components.get_demp2();
     }
 
     /* Run */
@@ -53,18 +33,17 @@ public class Employee extends Thread{
                 sleep((rand.nextInt(maxTime-minTime) + 1) + minTime);
             } catch(InterruptedException e){  }
             leap.check(name);
-            employeeStatus(name, 0, demp1, demp2);
+            employeeStatus(name, 0);
             belt_time = (System.nanoTime());
-            String suitCase = myBelt.pickCase(name, jTextArea_emp1,  dnum_casesBelt, dnum_pickUpCases, 
-                    status_icon, jText_totalCases, jTextArea_emp2, dnum_emp1, dnum_emp2, belt_time, belt_status);
+            String suitCase = myBelt.pickCase(name, belt_time);
             try{
                 sleep((rand.nextInt(maxTime-minTime) + 1) + minTime);
             } catch(InterruptedException e){  }
             leap.check(name);
-            employeeStatus(name, 1, demp1, demp2);
+            employeeStatus(name, 1);
             plane_time = (System.nanoTime());
-            myPlane.casesPlane(name, suitCase, jTextArea_AirplaneCases, dnum_casesAirplane, myPlane, plane_time);
-            employeeStatus(name, 2, demp1, demp2);
+            myPlane.casesPlane(name, suitCase, myPlane, plane_time);
+            employeeStatus(name, 2);
         }
     }
     
@@ -80,10 +59,8 @@ public class Employee extends Thread{
          * Method to set employee's status on Console
          * @param name String
          * @param time int
-         * @param demp1 JButton
-         * @param demp2 JButton
          */
-        public void employeeStatus(String name, int time, JButton demp1, JButton demp2){
+        public void employeeStatus(String name, int time){
             if(time == 0){
                 if(name.contains("Jorge")){
                     demp2.setText("Picking Suitcases"); 

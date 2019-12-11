@@ -2,17 +2,20 @@ package Client;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 public class Client_Launcher extends javax.swing.JFrame {
     /* Variables */
     private final int localPort = 5000;
+    private final int max_Port = 65535;
     private final String localHost = "127.0.0.1";
     private final Color dark_Blue = new Color(0,153,255);
     private final Color dark_Gray = new Color(51,51,51);
     private final Color black = new Color(0,0,0);
     private final Color light_Gray = new Color(0,0,51);
-    private boolean set_server, set_port = false;
-    private String port,ip;
+    private boolean set_server, set_port, validIP = false;
+    private String ip;
+    private int port;
 
     /* Init jSwing Components */
     public Client_Launcher() {
@@ -159,19 +162,31 @@ public class Client_Launcher extends javax.swing.JFrame {
 
     private void dLaunchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dLaunchActionPerformed
         Client client = new Client();
-        if(jText_ip.getText().contains("Introduce IP")){
-            ip = localHost;
-        }else{
-            ip = jText_ip.getText();
+        try{
+            if(jText_ip.getText().contains("Introduce IP")){
+                ip = localHost;
+            }else{
+                ip = jText_ip.getText();
+            }
+            if(jText_port.getText().contains("Introduce Port")){
+                port = localPort;
+            }else{
+                port = Integer.parseInt(jText_port.getText());
+            }
+            if(port<0 || port >= max_Port) port = 5000;
+            if(!validIP(ip)){
+                JOptionPane.showMessageDialog(null,"Please, specify a valid data!", "Problem!", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                validIP = true;
+            }
+            if(validIP){
+                client.executeConnection(ip, port, dLaunch);
+                dLaunch.setFont(new Font("", Font.BOLD, 14));
+                dLaunch.setText("Waiting for connection... " + ip);
+            }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Please, specify a valid data!", "Problem!", JOptionPane.INFORMATION_MESSAGE);
         }
-        if(jText_port.getText().contains("Introduce Port")){
-            port = String.valueOf(localPort);
-        }else{
-            port = jText_port.getText();
-        }
-        dLaunch.setFont(new Font("", Font.BOLD, 14));
-        dLaunch.setText("Waiting for connection... " + ip);
-        client.executeConnection(ip, Integer.valueOf(port), dLaunch);
     }//GEN-LAST:event_dLaunchActionPerformed
 
     private void jText_ipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jText_ipActionPerformed
@@ -211,6 +226,35 @@ public class Client_Launcher extends javax.swing.JFrame {
             }
         });
     }
+    
+    /**
+     * Method to validate introduced ip
+     * @param ip String
+     * @return 
+     */
+    public static boolean validIP (String ip) {
+    try {
+        if ( ip == null || ip.isEmpty() ) {
+            return false;
+        }
+        String[] parts = ip.split( "\\." );
+        if ( parts.length != 4 ) {
+            return false;
+        }
+        for ( String s : parts ) {
+            int i = Integer.parseInt( s );
+            if ( (i < 0) || (i > 255) ) {
+                return false;
+            }
+        }
+        if ( ip.endsWith(".") ) {
+            return false;
+        }
+        return true;
+    } catch (NumberFormatException nfe) {
+        return false;
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dLaunch;

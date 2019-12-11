@@ -1,6 +1,5 @@
 package Client;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -13,7 +12,6 @@ public class Client{
     private Socket socket;
     private Client_Console console;
     private DataInputStream inputStream = null;
-    private DataOutputStream outputStream = null;
     
     
     /**
@@ -35,13 +33,11 @@ public class Client{
     }
     
     /**
-     * Method to open flows from client after logging, to enable input and output data
+     * Method to open flows from client after logging, to enable input data
      */
     public void openFlows(){
         try{
         inputStream = new DataInputStream(socket.getInputStream());
-        outputStream = new DataOutputStream(socket.getOutputStream());
-        outputStream.flush();
         }catch(IOException e){
             System.out.println("Flows could not be opened correctly... " + e.getMessage());
             if(e.getMessage().contains("Socket closed")) System.exit(0);

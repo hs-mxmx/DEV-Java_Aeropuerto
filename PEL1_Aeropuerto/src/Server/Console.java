@@ -18,31 +18,39 @@ public class Console extends javax.swing.JFrame {
     private final Color dark_Blue = new Color(0,0,51);
     private final Color dark_Pink = new Color(102,0,51);
     private boolean  bEmp1 , bEmp2, bEmpOpen, bEmpClose = false;
-    Airplane airport = new Airplane();
-    Belt belt = new Belt();
+    
+    /* Public for the server */
+    Belt belt_final;
+    Airplane airplane_final;
+    
 
     /* Console */
     public Console() throws InterruptedException {
         initComponents(); 
+        Console_Components components = new Console_Components(jText_totalPassengers, dnum_passengers, dnum_casesBelt, status_icon, jTextArea_completedPassengers,
+        jText_totalCases, dnum_completed, beltStatus, jTextArea_emp1, jTextArea_airportCases, dnum_pickUpCases, dnum_casesAirport, jTextArea_emp2, dnum_emp1, dnum_emp2,
+        demp1, demp2);
+        Belt belt_temp = new Belt(components);
+        Airplane airplane_temp = new Airplane(components);
+        belt_final = belt_temp;
+        airplane_final = airplane_temp;
         for(int i = 1; i <= max_Passengers; i++){
             /* 40 Passengers as Threads */
-            Passenger pasajero = new Passenger("Passenger " + i, belt, jText_totalPassengers, dnum_passengers, dnum_casesBelt, 
-                    leap, status_icon, jTextArea_completedPassengers, jText_totalCases, dnum_completed, beltStatus);
-            pasajero.start();
-            if(i<max_employees){
+            Passenger passenger = new Passenger("Passenger " + i, belt_final);
+            passenger.start();
+            if(i<=max_employees){
                 /* 2 Employees as Threads */
-                Employee empleado = new Employee(belt, airport, jTextArea_emp1, jTextArea_airportCases, dnum_passengers, 
-                        dnum_casesBelt, dnum_pickUpCases, dnum_casesAirport, leap, status_icon, jText_totalCases, 
-                        jTextArea_emp2, dnum_emp1, dnum_emp2, demp1, demp2, beltStatus);
+                Employee employee = new Employee(belt_final, airplane_final, leap, components);
                 if(i==1){
-                    empleado.setName_employee("Dani");
+                    employee.setName_employee("Daniel");
                 }else{
-                    empleado.setName_employee("Jorge");
+                    employee.setName_employee("Jorge");
                 }
-                empleado.start();   
+                employee.start();   
             }   
         }
     }
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -112,6 +120,7 @@ public class Console extends javax.swing.JFrame {
         dtotal_passengers.setFont(new java.awt.Font("Sitka Display", 1, 16)); // NOI18N
         dtotal_passengers.setForeground(new java.awt.Color(0, 255, 255));
         dtotal_passengers.setText("Total Passengers");
+        dtotal_passengers.setFocusable(false);
         dtotal_passengers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dtotal_passengersActionPerformed(evt);
@@ -123,12 +132,14 @@ public class Console extends javax.swing.JFrame {
         dtotal_pickUpCases.setFont(new java.awt.Font("Sitka Display", 1, 16)); // NOI18N
         dtotal_pickUpCases.setForeground(new java.awt.Color(0, 255, 255));
         dtotal_pickUpCases.setText("Total Packed Cases");
+        dtotal_pickUpCases.setFocusable(false);
         jPanel2.add(dtotal_pickUpCases, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 250, 40));
 
         dcases_airport.setBackground(new java.awt.Color(0, 0, 51));
         dcases_airport.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         dcases_airport.setForeground(new java.awt.Color(0, 255, 255));
         dcases_airport.setText("Airport Cases");
+        dcases_airport.setFocusable(false);
         dcases_airport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dcases_airportActionPerformed(evt);
@@ -140,12 +151,14 @@ public class Console extends javax.swing.JFrame {
         dcompleted.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dcompleted.setForeground(new java.awt.Color(0, 255, 255));
         dcompleted.setText("Completed");
+        dcompleted.setFocusable(false);
         jPanel2.add(dcompleted, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 120, 130, 40));
 
         dtotal_casesBelt.setBackground(new java.awt.Color(0, 0, 51));
         dtotal_casesBelt.setFont(new java.awt.Font("Sitka Display", 1, 16)); // NOI18N
         dtotal_casesBelt.setForeground(new java.awt.Color(0, 255, 255));
         dtotal_casesBelt.setText("Total Cases on Belt");
+        dtotal_casesBelt.setFocusable(false);
         dtotal_casesBelt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dtotal_casesBeltActionPerformed(evt);
@@ -157,52 +170,66 @@ public class Console extends javax.swing.JFrame {
         dnum_passengers.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_passengers.setForeground(new java.awt.Color(0, 255, 255));
         dnum_passengers.setText("0");
+        dnum_passengers.setFocusable(false);
         jPanel2.add(dnum_passengers, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 60, 40));
 
         dnum_casesBelt.setBackground(new java.awt.Color(0, 51, 51));
         dnum_casesBelt.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_casesBelt.setForeground(new java.awt.Color(0, 255, 255));
         dnum_casesBelt.setText("0");
+        dnum_casesBelt.setFocusable(false);
         jPanel2.add(dnum_casesBelt, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 60, 40));
 
         dnum_pickUpCases.setBackground(new java.awt.Color(0, 51, 51));
         dnum_pickUpCases.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_pickUpCases.setForeground(new java.awt.Color(0, 255, 255));
         dnum_pickUpCases.setText("0");
+        dnum_pickUpCases.setFocusable(false);
         jPanel2.add(dnum_pickUpCases, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 120, 60, 40));
 
         dnum_emp1.setBackground(new java.awt.Color(0, 51, 51));
         dnum_emp1.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_emp1.setForeground(new java.awt.Color(0, 255, 255));
         dnum_emp1.setText("0");
+        dnum_emp1.setFocusable(false);
         jPanel2.add(dnum_emp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 320, 50, 40));
 
         dnum_emp2.setBackground(new java.awt.Color(0, 51, 51));
         dnum_emp2.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_emp2.setForeground(new java.awt.Color(0, 255, 255));
         dnum_emp2.setText("0");
+        dnum_emp2.setFocusable(false);
         jPanel2.add(dnum_emp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 520, 50, 40));
 
         demp1.setBackground(new java.awt.Color(71, 75, 0));
         demp1.setFont(new java.awt.Font("Sitka Display", 1, 16)); // NOI18N
         demp1.setForeground(new java.awt.Color(153, 255, 255));
+        demp1.setFocusable(false);
         jPanel2.add(demp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 320, 260, 40));
 
         demp2.setBackground(new java.awt.Color(71, 75, 0));
         demp2.setFont(new java.awt.Font("Sitka Display", 1, 16)); // NOI18N
         demp2.setForeground(new java.awt.Color(153, 255, 255));
+        demp2.setFocusable(false);
+        demp2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                demp2ActionPerformed(evt);
+            }
+        });
         jPanel2.add(demp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 520, 260, 40));
 
         dnum_casesAirport.setBackground(new java.awt.Color(0, 51, 51));
         dnum_casesAirport.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_casesAirport.setForeground(new java.awt.Color(0, 255, 255));
         dnum_casesAirport.setText("0");
+        dnum_casesAirport.setFocusable(false);
         jPanel2.add(dnum_casesAirport, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 120, 50, -1));
 
         dnum_completed.setBackground(new java.awt.Color(0, 51, 51));
         dnum_completed.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         dnum_completed.setForeground(new java.awt.Color(0, 255, 255));
         dnum_completed.setText("0");
+        dnum_completed.setFocusable(false);
         jPanel2.add(dnum_completed, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 120, 50, -1));
 
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -229,7 +256,7 @@ public class Console extends javax.swing.JFrame {
         emp1.setBackground(new java.awt.Color(0, 0, 51));
         emp1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         emp1.setForeground(new java.awt.Color(255, 255, 255));
-        emp1.setText("DANI");
+        emp1.setText("DANIEL");
         emp1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         emp1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,6 +266,7 @@ public class Console extends javax.swing.JFrame {
         jPanel2.add(emp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 600, 150, 40));
 
         jButton13.setBackground(new java.awt.Color(0, 0, 0));
+        jButton13.setFocusable(false);
         jPanel2.add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 590, 170, 60));
 
         jTextArea_emp1.setEditable(false);
@@ -296,6 +324,8 @@ public class Console extends javax.swing.JFrame {
         jTextArea_emp2.setForeground(new java.awt.Color(51, 255, 255));
         jTextArea_emp2.setRows(1);
         jTextArea_emp2.setTabSize(1);
+        jTextArea_emp2.setCaretColor(new java.awt.Color(0, 0, 0));
+        jTextArea_emp2.setFocusable(false);
         jScrollPane7.setViewportView(jTextArea_emp2);
 
         jPanel2.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 370, 320, 140));
@@ -324,12 +354,14 @@ public class Console extends javax.swing.JFrame {
         jPanel2.add(closeAll, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 600, 140, 40));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jButton2.setFocusable(false);
         jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 660, 160, 60));
 
         b_generalRecord.setBackground(new java.awt.Color(0, 51, 51));
         b_generalRecord.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         b_generalRecord.setForeground(new java.awt.Color(0, 255, 255));
         b_generalRecord.setText("General Record");
+        b_generalRecord.setFocusable(false);
         b_generalRecord.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         b_generalRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -341,6 +373,7 @@ public class Console extends javax.swing.JFrame {
         beltStatus.setBackground(new java.awt.Color(0, 0, 0));
         beltStatus.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         beltStatus.setForeground(new java.awt.Color(255, 255, 0));
+        beltStatus.setFocusable(false);
         beltStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 beltStatusActionPerformed(evt);
@@ -349,6 +382,7 @@ public class Console extends javax.swing.JFrame {
         jPanel2.add(beltStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 670, 250, 40));
 
         jButton7.setBackground(new java.awt.Color(0, 0, 0));
+        jButton7.setFocusable(false);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -360,6 +394,7 @@ public class Console extends javax.swing.JFrame {
         b_casesRecord.setFont(new java.awt.Font("Sitka Display", 1, 18)); // NOI18N
         b_casesRecord.setForeground(new java.awt.Color(0, 255, 255));
         b_casesRecord.setText("Cases Record");
+        b_casesRecord.setFocusable(false);
         b_casesRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_casesRecordActionPerformed(evt);
@@ -368,12 +403,15 @@ public class Console extends javax.swing.JFrame {
         jPanel2.add(b_casesRecord, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 650, 200, 60));
 
         jButton8.setBackground(new java.awt.Color(0, 0, 0));
+        jButton8.setFocusable(false);
         jPanel2.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 110, 340, 460));
 
         jButton9.setBackground(new java.awt.Color(0, 0, 0));
+        jButton9.setFocusable(false);
         jPanel2.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 180, 210, 540));
 
         jButton10.setBackground(new java.awt.Color(0, 0, 0));
+        jButton10.setFocusable(false);
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
@@ -382,28 +420,37 @@ public class Console extends javax.swing.JFrame {
         jPanel2.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 180, 220, 540));
 
         jButton11.setBackground(new java.awt.Color(0, 0, 0));
+        jButton11.setFocusable(false);
         jPanel2.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 110, 210, 60));
 
         jButton12.setBackground(new java.awt.Color(0, 0, 0));
+        jButton12.setFocusable(false);
         jPanel2.add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 110, 220, 60));
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jButton1.setFocusable(false);
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 660, 170, 60));
 
         jButton16.setBackground(new java.awt.Color(0, 0, 51));
         jButton16.setFont(new java.awt.Font("Sitka Display", 1, 24)); // NOI18N
-        jButton16.setIcon(new javax.swing.ImageIcon("C:\\Users\\dani\\Downloads\\cooltext342023282149837.png")); // NOI18N
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cooltext342023282149837.png"))); // NOI18N
+        jButton16.setFocusable(false);
         jButton16.setOpaque(false);
+        jButton16.setRequestFocusEnabled(false);
+        jButton16.setVerifyInputWhenFocusTarget(false);
         jPanel2.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 1190, 80));
 
         jButton14.setBackground(new java.awt.Color(0, 0, 0));
+        jButton14.setFocusable(false);
         jPanel2.add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 590, 160, 60));
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 51));
+        jLabel1.setFocusable(false);
         jLabel1.setOpaque(true);
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 10, 1240, 740));
 
         jButton3.setBackground(new java.awt.Color(0, 0, 51));
+        jButton3.setFocusable(false);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -545,6 +592,10 @@ public class Console extends javax.swing.JFrame {
             leap.open("dani");
         }
     }//GEN-LAST:event_openAllActionPerformed
+
+    private void demp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_demp2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_demp2ActionPerformed
 
     /* Main */
     public static void main(String args[]) {
