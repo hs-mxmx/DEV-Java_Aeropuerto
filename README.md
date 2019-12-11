@@ -27,4 +27,4 @@ Como futuras mejoras quedaría modificar la transmisión del tipo de dato, en ve
   - [x] Lenguaje de Programación Java
   - [x] Estructura bien diferenciada Cliente / Servidor
   - [ ] Comunicación Bidireccional (Implementada pero no se le da uso)
-  - [ ] Multilenguaje en el código
+  - [x] Multilenguaje en el código
